@@ -271,7 +271,10 @@ class DCATRDFHarvester(DCATHarvester):
         # Check if a dataset with the same guid exists
         existing_dataset = self._get_existing_dataset(harvest_object.guid)
 
-        if existing_dataset:
+        # Check if only new datasets have to be updated
+        only_new_datasets = json.loads(harvest_object.job.source.config).get("only_new_datasets", False)
+
+        if existing_dataset and not only_new_datasets:
             # Don't change the dataset name even if the title has
             dataset['name'] = existing_dataset['name']
             dataset['id'] = existing_dataset['id']
